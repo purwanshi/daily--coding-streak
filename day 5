@@ -1,0 +1,31 @@
+-✅ Day 04:This problem was asked by Google.
+Given an array of integers where every integer occurs three times except for one integer, which only occurs once, find and return the non-duplicated integer.
+For example, given [6, 1, 3, 3, 3, 6, 6], return 1. Given [13, 19, 13, 13], return 19.
+Do this in O(N) time and O(1) space.💥
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int nonDuplicatedInteger(vector<int>&arr){
+	int result=0,x,sum;
+	for(int i=0;i<32;i++){
+	sum=0;
+	x=(1<<i);
+	for(int j=0;j<arr.size();j++){
+		if(arr[j]&x){
+			sum++;
+		}
+	}
+	if((sum%3)!=0){
+		result|=x;
+	}
+	}
+	return result;
+}
+int main(){
+	vector<int>arr={6, 1, 3, 3, 3, 6, 6};
+	cout<<nonDuplicatedInteger(arr)<<endl;
+	return 0;
+}
