@@ -1,0 +1,80 @@
+day 6:This problem was asked by Facebook.
+Given an unordered list of flights taken by someone, each represented as (origin, destination) pairs, and a starting airport, compute the person's itinerary. 
+If no such itinerary exists, return null. If there are multiple possible itineraries, return the lexicographically smallest one. All flights must be used in the itinerary.
+For example, given the list of flights [('SFO', 'HKO'), ('YYZ', 'SFO'), ('YUL', 'YYZ'), ('HKO', 'ORD')] and starting airport 'YUL', you should return the list ['YUL', 'YYZ', 'SFO', 'HKO', 'ORD'].
+Given the list of flights [('SFO', 'COM'), ('COM', 'YYZ')] and starting airport 'COM', you should return null.
+Given the list of flights [('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'A')] and starting airport 'A', you should return the list ['A', 'B', 'C', 'A', 'C'] even though ['A', 'C', 'A', 'B', 'C'] is also a valid itinerary.
+However, the first one is lexicographically smaller.💥💥✅
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <map>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+bool dfs(string airport, unordered_map<string, multiset<string>>& adj, vector<string>& result, int totalFlights) {
+    while (!adj[airport].empty()) {
+        
+        string next = *adj[airport].begin();
+        adj[airport].erase(adj[airport].begin());
+        dfs(next, adj, result, totalFlights);
+    }
+    result.push_back(airport);  
+
+    if (result.size() == totalFlights + 1) return true;
+    return false;
+}
+
+vector<string> findItinerary(vector<pair<string, string>> flights, string start) {
+    unordered_map<string, multiset<string>> adj;
+    for (auto flight : flights) {
+        adj[flight.first].insert(flight.second);
+    }
+
+    vector<string> result;
+    dfs(start, adj, result, flights.size());
+    reverse(result.begin(), result.end());
+
+    if (result.size() != flights.size() + 1)
+        return {};
+
+    return result;
+}
+
+int main() {
+    vector<pair<string, string>> flights1 = {{"SFO", "HKO"}, {"YYZ", "SFO"}, {"YUL", "YYZ"}, {"HKO", "ORD"}};
+    string start1 = "YUL";
+    auto res1 = findItinerary(flights1, start1);
+    if (res1.empty()) cout << "null" << endl;
+    else {
+        for (auto city : res1) cout << city << " ";
+        cout << endl;
+    }
+
+    vector<pair<string, string>> flights2 = {{"SFO", "COM"}, {"COM", "YYZ"}};
+    string start2 = "COM";
+    auto res2 = findItinerary(flights2, start2);
+    if (res2.empty()) cout << "null" << endl;
+    else {
+        for (auto city : res2) cout << city << " ";
+        cout << endl;
+    }
+
+    vector<pair<string, string>> flights3 = {{"A", "B"}, {"A", "C"}, {"B", "C"}, {"C", "A"}};
+    string start3 = "A";
+    auto res3 = findItinerary(flights3, start3);
+    if (res3.empty()) cout << "null" << endl;
+    else {
+        for (auto city : res3) cout << city << " ";
+        cout << endl;
+    }
+
+    return 0;
+}
+
+
+
+
